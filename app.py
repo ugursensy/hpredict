@@ -1,15 +1,21 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
+import joblib
 
+st.set_page_config(page_title="Ev Fiyat Tahmini", page_icon="🏠")
 st.title("🏠 Ridge Regresyon ile Ev Fiyat Tahmini")
 
-# Modeli yükle
-with open("ridge_model.pkl", "rb") as file:
-    model = pickle.load(file)
+# MODELI YÜKLE (pickle değil, joblib!)
+@st.cache_resource
+def load_model():
+    return joblib.load("ridge_model.pkl")
 
-# Girdi alanları
+model = load_model()
+
+# Kullanıcıdan veri al
+st.subheader("Ev Özelliklerini Girin:")
+
 grlivarea = st.number_input("Yaşanabilir Alan (GrLivArea)", min_value=0)
 garagecars = st.number_input("Garaj Kapasitesi", min_value=0)
 fullbath = st.number_input("Tam Banyo Sayısı", min_value=0)
@@ -24,6 +30,5 @@ if st.button("Tahmin Et"):
         "YearBuilt": [yearbuilt],
         "OverallQual": [overallqual]
     })
-    
     prediction = model.predict(input_data)
-    st.success(f"Tahmini Ev Fiyatı: ${prediction[0]:,.0f}")
+    st.success(f"🏷️ Tahmini Ev Fiyatı: ${prediction[0]:,.0f}")
