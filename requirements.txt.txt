@@ -1,3 +1,5 @@
+# Gereken kütüphaneler
+joblib>=1.0
 streamlit
 pandas
 numpy
